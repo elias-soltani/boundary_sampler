@@ -25,11 +25,11 @@ def centre_radius(ranges, extends):
     return centre, radius
 
 
-def generate_sample_points(points):
+def generate_sample_points(points, sample_along, sample_around):
     ranges, extends = outline(points)
     centre, radius = centre_radius(ranges, extends)
-    along_theta = 32
-    along_z = 5
+    along_z = sample_along
+    along_theta = sample_around
     element_height = extends[2]/along_z
     x = []
     y = []
@@ -55,6 +55,8 @@ def generate_sample_points(points):
 
 def main(input_file, **kwargs):
     output_file = kwargs["output_file"]
+    sample_along = kwargs["sample_along"] if kwargs["sample_along"] else 30
+    sample_around = kwargs["sample_around"] if kwargs["sample_around"] else 30
     with open(input_file, 'r') as f1:
         reader = csv.reader(f1)
         next(reader, None)
@@ -63,7 +65,7 @@ def main(input_file, **kwargs):
             points.append([float(d) for d in point])
 
     points = np.array(points)
-    sampled = generate_sample_points(points)
+    sampled = generate_sample_points(points, sample_along, sample_around)
 
     with open(output_file, 'w', newline='') as f2:
         writer = csv.writer(f2)
@@ -74,7 +76,9 @@ def main(input_file, **kwargs):
 if __name__ == "__main__":
     input_file = r"input/heart.csv"
     output_file = r"expected_results/sampled.csv"
+    sample_along = 5
+    sample_around = 32
     start = time.time()
-    main(input_file, output_file=output_file)
+    main(input_file, output_file=output_file, sample_along=sample_along, sample_around=sample_around)
     end = time.time()
     print(end - start)
